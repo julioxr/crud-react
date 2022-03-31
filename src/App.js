@@ -1,21 +1,23 @@
 import { useState } from "react";
 
 function App() {
-    const [tarea, setTarea] = useState();
+    const [tarea, setTarea] = useState("");
     const [tareas, setTareas] = useState([]);
     const [modoEdidicion, setModoEdicion] = useState(false);
     const [id, setId] = useState("");
+    const [error, setError] = useState(null);
 
     const agregarTarea = (e) => {
         e.preventDefault();
         if (!tarea.trim()) {
-            console.log("Nombre vacio");
+            setError("Escriba algo por favor...");
             return;
         }
 
         setTareas([...tareas, { id: Date.now(), nombreTarea: tarea }]);
 
         setTarea("");
+        setError(null);
     };
 
     const eliminarTarea = (id) => {
@@ -34,6 +36,7 @@ function App() {
         e.preventDefault();
         if (!tarea.trim()) {
             console.log("Vacio");
+            setError("Escriba algo por favor...");
             return;
         }
 
@@ -45,6 +48,7 @@ function App() {
         setModoEdicion(false);
         setTarea("");
         setId("");
+        setError(null);
     };
 
     return (
@@ -85,6 +89,10 @@ function App() {
                         {modoEdidicion ? "Editar Tarea" : "Nueva Tarea"}
                     </h4>
                     <form onSubmit={modoEdidicion ? editarTarea : agregarTarea}>
+                        {error ? (
+                            <span className="text-danger">{error}</span>
+                        ) : null}
+
                         <input
                             type="text"
                             className="form-control mb-2"
@@ -92,7 +100,6 @@ function App() {
                             onChange={(e) => setTarea(e.target.value)}
                             value={tarea}
                         />
-
                         {modoEdidicion ? (
                             <button
                                 className="btn btn-warning btn-block"
